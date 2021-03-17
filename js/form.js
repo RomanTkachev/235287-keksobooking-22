@@ -228,5 +228,6 @@ export {
   deactivateForm,
   activateForm,
   FormInputs,
-  setMarkerCoordinates
+  setMarkerCoordinates,
+  MAP_FILTER
 }

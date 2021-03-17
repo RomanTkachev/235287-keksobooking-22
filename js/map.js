@@ -103,12 +103,6 @@ const createIcons = (points, onClick) => {
   });
 }
 
-//Удаление маркеров объявлений
-
-const removeIcons = () => {
-  //в следующем задании реализация подъедет
-}
-
 const resetMap = () => {
   MAP.panTo(new LEAFLET.LatLng(TOKIO_CENTER_COORDINATES.lat, TOKIO_CENTER_COORDINATES.lng));
   MAIN_MAP_MARKER.setLatLng(LEAFLET.latLng(TOKIO_CENTER_COORDINATES.lat, TOKIO_CENTER_COORDINATES.lng));
@@ -120,4 +114,4 @@ const createMap = (onLoad, onMainPinMove) => {
   createMainIcon(onMainPinMove);
 }
 
-export {createMap, resetMap, createIcons, removeIcons}
+export {createMap, resetMap, createIcons, MAP}
