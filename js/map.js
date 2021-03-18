@@ -4,6 +4,7 @@ const MAP = LEAFLET.map('map-canvas');
 const OPENSTREETMAP_COPYRIGHT = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 const OPENSTREETMAP_TILE = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
+
 const MAIN_PIN_ICON_SIZES = {
   width: 50,
   height: 50,
@@ -32,6 +33,16 @@ const TOKIO_CENTER_COORDINATES = {
 const Icons = {
   MAIN: './img/main-pin.svg',
   COMMON: './img/pin.svg',
+}
+
+const AD_PIN_ICON = {
+  iconUrl: Icons.COMMON,
+  iconSize: [COMMON_PIN_ICON_SIZES.width, COMMON_PIN_ICON_SIZES.height],
+  iconAnchor: [COMMON_PIN_ICON_ANCHOR_SIZES.width, COMMON_PIN_ICON_ANCHOR_SIZES.height],
+}
+
+const AD_PIN_PARAMS = {
+    keepInView: true,
 }
 
 const MAIN_MAP_ICON = LEAFLET.icon({
@@ -79,27 +90,16 @@ const createMainIcon = (onMainPinMove) => {
 
 //Создание маркеров объявлений
 
+let icons = [];
+
 const createIcons = (points, onClick) => {
   points.forEach((point, idx) => {
-    const icon = LEAFLET.icon({
-      iconUrl: Icons.COMMON,
-      iconSize: [COMMON_PIN_ICON_SIZES.width, COMMON_PIN_ICON_SIZES.height],
-      iconAnchor: [COMMON_PIN_ICON_ANCHOR_SIZES.width, COMMON_PIN_ICON_ANCHOR_SIZES.height],
-    });
+    const icon = LEAFLET.icon(AD_PIN_ICON);
+    const adMarker = LEAFLET.marker(point, { icon });
 
-    const adMarker = LEAFLET.marker(
-      point,
-      {
-        icon: icon,
-      },
-    );
-
+    icons.push(adMarker);
+    adMarker.bindPopup(onClick(idx), AD_PIN_PARAMS);
     adMarker.addTo(MAP);
-    adMarker.bindPopup(onClick(idx),
-      {
-        keepInView: true,
-      },
-    );
   });
 }
 
@@ -114,4 +114,9 @@ const createMap = (onLoad, onMainPinMove) => {
   createMainIcon(onMainPinMove);
 }
 
-export {createMap, resetMap, createIcons, MAP}
+const removeIcons = () => {
+  icons.forEach((icon) => MAP.removeLayer(icon))
+  icons = [];
+}
+
+export {createMap, resetMap, createIcons, removeIcons}

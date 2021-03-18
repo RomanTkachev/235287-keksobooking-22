@@ -77,11 +77,16 @@ const pluralize = (count, variants) => {
   return variants[2];
 };
 
+const hasKey = (obj, key) => {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+};
+
 export {
   getRandomBetween,
   getRandomFloat,
   getRandomArrayElement,
   getRandomArrayWithUniqueElements,
   getRandomObjectValue,
-  pluralize
+  pluralize,
+  hasKey,
 };

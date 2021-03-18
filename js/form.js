@@ -49,7 +49,8 @@ const deactivateForm = () => {
   formInteractiveElements.forEach((formElement) => {
     formElement.disabled = true;
   });
-
+  MAP_FILTER.removeEventListener('change', handleFilterChange);
+  handleFilterChange = null;
   AD_FORM.classList.add('ad-form--disabled')
   deactivateFilter();
   removeEventListenersFromForm();
@@ -63,10 +64,35 @@ const activateFilter = () => {
   MAP_FILTER.classList.remove('map__filters--disabled')
 }
 
-const activateForm = () => {
+const setMarkerCoordinates = (coords) => {
+  FormInputs.ADRESS.value = `${coords.lat.toFixed(DIGIT_AFTER_POINT)}, ${coords.lng.toFixed(DIGIT_AFTER_POINT)}`
+}
+
+const getHandleFilterChange = (setSelectValue, setCheckboxValue) => (evt) => {
+  const field = evt.target;
+
+  if(field.tagName === 'SELECT') {
+    setSelectValue(field.id, field.value);
+
+    return;
+  }
+
+  if(field.tagName === 'INPUT') {
+    setCheckboxValue(field.id, field.checked);
+
+    return;
+  };
+};
+
+let handleFilterChange;
+
+const activateForm = (setSelectValue, setCheckboxValue) => {
   formInteractiveElements.forEach((formElement) => {
     formElement.disabled = false;
   });
+
+  handleFilterChange = getHandleFilterChange(setSelectValue, setCheckboxValue);
+  MAP_FILTER.addEventListener('change', handleFilterChange);
 
   AD_FORM.classList.remove('ad-form--disabled')
   activateFilter();
@@ -219,15 +245,10 @@ const removeEventListenersFromForm = () => {
   })
 }
 
-const setMarkerCoordinates = (coords) => {
-  FormInputs.ADRESS.value = `${coords.lat.toFixed(DIGIT_AFTER_POINT)}, ${coords.lng.toFixed(DIGIT_AFTER_POINT)}`
-}
-
 export {
   addEventListenersToForm,
   deactivateForm,
   activateForm,
   FormInputs,
   setMarkerCoordinates,
-  MAP_FILTER
 }

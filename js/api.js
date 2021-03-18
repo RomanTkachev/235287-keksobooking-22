@@ -1,7 +1,7 @@
 const SERVER_GET_URL = 'https://22.javascript.pages.academy/keksobooking/data';
 const SERVER_SEND_URL = 'https://22.javascript.pages.academy/keksobooking';
 
-const getData = (serverUrl, onSuccess, onError) => () => {
+const loadData = (serverUrl, onSuccess, onError) => {
   return fetch(serverUrl)
     .then((response) => {
       if (response.ok) {
@@ -13,9 +13,7 @@ const getData = (serverUrl, onSuccess, onError) => () => {
     .then((data) => {
       onSuccess(data);
     })
-    .catch(() => {
-      onError();
-    });
+    .catch(onError);
 }
 
 const sendData = (serverUrl, data, onSuccess, onError) => {
@@ -31,7 +29,7 @@ const sendData = (serverUrl, data, onSuccess, onError) => {
         onError();
       }
     })
-    .catch(() => onError());
+    .catch(onError);
 }
 
-export {getData, sendData, SERVER_GET_URL, SERVER_SEND_URL}
+export {loadData, sendData, SERVER_GET_URL, SERVER_SEND_URL}
