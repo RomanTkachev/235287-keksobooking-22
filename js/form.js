@@ -51,6 +51,11 @@ const deactivateFilter = () => {
   MAP_FILTER.classList.add('map__filters--disabled')
 }
 
+/**
+ * Деактивирует форму: 
+ * 1. Каждому input формы и фильтра ставит атрубут disabled
+ * 2. Снимает обработчики событий с input фильтра и формы
+ */
 const deactivateForm = () => {
   formInteractiveElements.forEach((formElement) => {
     formElement.disabled = true;
@@ -95,10 +100,10 @@ let handleFilterChange;
 /**
  * Активация формы
  * 1. Убирает параметр disable c элементов формы и фильтра
- * 2. Добавляет обработчик изменения элеметнов фильтрации
- * 3. Добавляет обработчики событий для элементов формы (для валидациии и отправки)
- * @param {*} setSelectValue — 
- * @param {*} setCheckboxValue 
+ * 2. Добавляет обработчик изменения элементов фильтрации
+ * 3. Добавляет обработчики событий для элементов формы (для валидациии и отправки формы)
+ * @param {*} setSelectValue — обработчик изменений для селектов фильтра
+ * @param {*} setCheckboxValue — обработчик изменений для чекбоксов фильтра
  */
 
 const activateForm = (setSelectValue, setCheckboxValue) => {

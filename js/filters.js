@@ -44,14 +44,29 @@ const DEFAULT_VALUES = {
 const LOW_PRICE = 10000;
 const HIGH_PRICE = 50000;
 
+/**
+ * Формирут объект со значениями фильтров по умолчанию
+ * @returns объект с дефолтными значениям (селекты пустые, чекбоксы — false). 
+ */
+
 const getDefaultValues = () => ({
   ...DEFAULT_VALUES,
   [FilterTypes.FEATURES]: {
-    ...DEFAULT_FEATURES_VALUES
-  }
+    ...DEFAULT_FEATURES_VALUES,
+  },
 })
 
 const currentValues = getDefaultValues();
+
+/**
+ * Определяет выбранное значение в Select
+ * 1. Проверяет наличие ключа и проверяет, что это не фильтр по преимуществам
+ * 2. В случае успеха проверки записывает filterValue в объект currentValues
+ * 3. В случае провала бросает исключение с filterKey
+ *
+ * @param {*} filterKey — ключ для фильтрации
+ * @param {*} filterValue — значение ключа для фильтрации
+ */
 
 const setSelectValue = (filterKey, filterValue) => {
   if(hasKey(DEFAULT_VALUES, filterKey) && filterKey !== FilterTypes.FEATURES) {
@@ -60,6 +75,15 @@ const setSelectValue = (filterKey, filterValue) => {
     throw new Error(`Недопустимый ключ ${filterKey}`);
   }
 };
+
+/**
+ * Определяет значение выбранного чекбокса feature
+ * 1. Проверяет наличие ключа и проверяет, что это не фильтр по преимуществам
+ * 2. В случае успеха проверки записывает filterValue в объект FilterTypes.FEATURES объекта currentValues
+ * 3. В случае провала бросает исключение с filterKey
+ * @param {*} featureKey — ключ для фильтрации
+ * @param {*} featureValue — значение ключа для фильтрации
+ */
 
 const setFeatureValue = (featureKey, featureValue) => {
   if(hasKey(DEFAULT_FEATURES_VALUES, featureKey)) {

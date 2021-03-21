@@ -42,7 +42,7 @@ const AD_PIN_ICON = {
 }
 
 const AD_PIN_PARAMS = {
-    keepInView: true,
+  keepInView: true,
 }
 
 const MAIN_MAP_ICON = LEAFLET.icon({
@@ -91,6 +91,18 @@ const createMainIcon = (onMainPinMove) => {
 //Создание маркеров объявлений
 
 let icons = [];
+
+/**
+ * Создает маркеры объявлений и добавляет их на карту. По каждому объекту координат:
+ * 1. Создает иконку карты
+ * 2. Создает маркер, 
+ * 3. Добавляет созданный маркер в массив icons (нужно для последующего удаления иконок)
+ * 4. Добавляет отрисовку попапа по клику
+ * 5. Добавляет маркер на карту
+ * 
+ * @param {*} points массив с объектами координат объявлений
+ * @param {*} onClick обработчик события клика по маркеру объявления
+ */
 
 const createIcons = (points, onClick) => {
   points.forEach((point, idx) => {
