@@ -107,7 +107,14 @@ const resetMap = () => {
   MAP.panTo(new LEAFLET.LatLng(TOKIO_CENTER_COORDINATES.lat, TOKIO_CENTER_COORDINATES.lng));
   MAIN_MAP_MARKER.setLatLng(LEAFLET.latLng(TOKIO_CENTER_COORDINATES.lat, TOKIO_CENTER_COORDINATES.lng));
 }
-
+/**
+ * Создание карты
+ * 1. Загрузка карты
+ * 2. Отрисовка слоя с картой и добавление на карту
+ * 3. Создние главного маркера
+ * @param {*} onLoad - обработчик успешной загрузки карты
+ * @param {*} onMainPinMove - обработчик движения главного маркера
+ */
 const createMap = (onLoad, onMainPinMove) => {
   loadMap(onLoad, onMainPinMove);
   loadTile();

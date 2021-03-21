@@ -8,6 +8,10 @@ const DIGIT_AFTER_POINT = 5
 const AD_FORM = document.querySelector('.ad-form');
 const BUTTON_RESET = document.querySelector('.ad-form__reset');
 const MAP_FILTER = document.querySelector('.map__filters');
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+const AVATAR_PREVIEW = document.querySelector('.ad-form-header__preview img');
+const PHOTO_PREVIEW_CONTAINER = document.querySelector('.ad-form__photo');
+const FORM_PHOTO_TEMPLATE = document.querySelector('#form-photo').content.querySelector('img');
 
 const MIN_PRICES = {
   bungalow: 0,
@@ -25,6 +29,8 @@ const FormInputs = {
   TITLE: AD_FORM.querySelector('#title'),
   ROOM_NUMBER: AD_FORM.querySelector('#room_number'),
   CAPACITY: AD_FORM.querySelector('#capacity'),
+  PHOTO_CHOOSER: AD_FORM.querySelector('#images'),
+  AVATAR_CHOOSER: AD_FORM.querySelector('#avatar'),
 }
 
 const TitleLength = {
@@ -81,10 +87,19 @@ const getHandleFilterChange = (setSelectValue, setCheckboxValue) => (evt) => {
     setCheckboxValue(field.id, field.checked);
 
     return;
-  };
+  }
 };
 
 let handleFilterChange;
+
+/**
+ * Активация формы
+ * 1. Убирает параметр disable c элементов формы и фильтра
+ * 2. Добавляет обработчик изменения элеметнов фильтрации
+ * 3. Добавляет обработчики событий для элементов формы (для валидациии и отправки)
+ * @param {*} setSelectValue — 
+ * @param {*} setCheckboxValue 
+ */
 
 const activateForm = (setSelectValue, setCheckboxValue) => {
   formInteractiveElements.forEach((formElement) => {
@@ -177,10 +192,53 @@ const validateRoomsAndGuests = (evt) => {
   }
 }
 
+const handleAvatarChange = () => {
+  const file = FormInputs.AVATAR_CHOOSER.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((file) => {
+    return fileName.endsWith(file);
+  });
+
+  if (matches) {
+    const reader = new FileReader();
+
+    reader.addEventListener('load', () => {
+      AVATAR_PREVIEW.src = reader.result;
+    });
+
+    reader.readAsDataURL(file);
+  }
+}
+
+const handlePhotoChange = () => {
+  const file = FormInputs.PHOTO_CHOOSER.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((file) => {
+    return fileName.endsWith(file);
+  });
+
+  if (matches) {
+    const reader = new FileReader();
+    const handleLoadSuccess = () => {
+      PHOTO_PREVIEW_CONTAINER.textContent = '';
+      const photo = FORM_PHOTO_TEMPLATE.cloneNode(true);
+      photo.src = reader.result;
+      PHOTO_PREVIEW_CONTAINER.appendChild(photo)
+    }
+
+    reader.addEventListener('load', handleLoadSuccess);
+    reader.readAsDataURL(file);
+  }
+}
+
 const handleFormSuccess = () => {
-  showPopupSuccess(),
-  AD_FORM.reset(),
-  resetMap()
+  showPopupSuccess();
+  AD_FORM.reset();
+  cleanAvatar();
+  cleanPhoto();
+  resetMap();
 }
 
 const addEventListenersToForm = () => {
@@ -189,6 +247,8 @@ const addEventListenersToForm = () => {
   FormInputs.TYPE.addEventListener('change', setMinPrices);
   FormInputs.TITLE.addEventListener('input', validateTitleLength);
   FormInputs.ROOM_NUMBER.addEventListener('change', validateRoomsAndGuests);
+  FormInputs.PHOTO_CHOOSER.addEventListener('change', handlePhotoChange);
+  FormInputs.AVATAR_CHOOSER.addEventListener('change', handleAvatarChange);
 
   FormInputs.PRICE.addEventListener('input', () => {
     validateMaxPrice();
@@ -220,6 +280,8 @@ const removeEventListenersFromForm = () => {
   FormInputs.TYPE.removeEventListener('change', setMinPrices);
   FormInputs.TITLE.removeEventListener('input', validateTitleLength);
   FormInputs.ROOM_NUMBER.removeEventListener('change', validateRoomsAndGuests);
+  FormInputs.PHOTO_CHOOSER.removeEventListener('change', handlePhotoChange);
+  FormInputs.AVATAR_CHOOSER.removeEventListener('change', handleAvatarChange);
 
   FormInputs.PRICE.removeEventListener('input', () => {
     validateMaxPrice();
@@ -245,10 +307,20 @@ const removeEventListenersFromForm = () => {
   })
 }
 
+const cleanAvatar = () => {
+  const avatar = AD_FORM.querySelector('.ad-form-header__preview img');
+  avatar.src = 'img/muffin-grey.svg';
+}
+
+const cleanPhoto = () => {
+  const photo = AD_FORM.querySelector('.ad-form__photo img');
+  photo.remove();
+}
+
 export {
   addEventListenersToForm,
   deactivateForm,
   activateForm,
   FormInputs,
-  setMarkerCoordinates,
+  setMarkerCoordinates
 }

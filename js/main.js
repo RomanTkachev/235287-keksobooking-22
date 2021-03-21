@@ -1,3 +1,4 @@
+/* global _:readonly */
 import {deactivateForm, activateForm, setMarkerCoordinates} from './form.js';
 import {createMap, createIcons, removeIcons} from './map.js';
 import {createPopup, showAlertPopup} from './popup.js';
@@ -5,7 +6,7 @@ import {loadData, SERVER_GET_URL} from './api.js';
 import {setSelectValue, setFeatureValue, checkData} from './filters.js';
 import {storeData, getData, prepareData} from './data.js';
 
-const MAX_ADS_COUNT = 10
+const RERENDER_DELAY = 500;
 
 const adaptPoints = ad => ({
   lat: ad.location.lat,
@@ -25,16 +26,16 @@ const onSuccessHandler = (data) => {
 }
 
 const onErrorHandler = (error) => {
-  console.error(error)
+  console.error(error);
   showAlertPopup();
 }
 
-const updateIcons = () => {
+const updateIcons = _.debounce(() => {
   prepareData(checkData);
   const ads = getData();
   removeIcons();
   renderIcons(ads);
-}
+}, RERENDER_DELAY);
 
 const handleSelectChange = (...args) => {
   setSelectValue(...args);
