@@ -3,6 +3,7 @@ const LEAFLET = L;
 const MAP = LEAFLET.map('map-canvas');
 const OPENSTREETMAP_COPYRIGHT = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 const OPENSTREETMAP_TILE = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const MAP_SCALE = 10;
 
 
 const MAIN_PIN_ICON_SIZES = {
@@ -63,7 +64,7 @@ const MAIN_MAP_MARKER = LEAFLET.marker(
 );
 
 const loadMap = (onLoad, onMainPinMove) => {
-  MAP.on('load', onLoad).setView(TOKIO_CENTER_COORDINATES, 10);
+  MAP.on('load', onLoad).setView(TOKIO_CENTER_COORDINATES, MAP_SCALE);
   onMainPinMove(TOKIO_CENTER_COORDINATES)
 };
 

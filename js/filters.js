@@ -41,8 +41,11 @@ const DEFAULT_VALUES = {
   [FilterTypes.FEATURES]: null,
 }
 
-const LOW_PRICE = 10000;
-const HIGH_PRICE = 50000;
+
+const PRICE = {
+  low: 10000,
+  high: 50000,
+}
 
 /**
  * Формирут объект со значениями фильтров по умолчанию
@@ -109,11 +112,11 @@ const checkHousingPrice = (type, price) => {
     case 'any':
       return true;
     case 'low':
-      return price < LOW_PRICE;
+      return price < PRICE.low;
     case 'middle':
-      return price >= LOW_PRICE && price < HIGH_PRICE;
+      return price >= PRICE.low && price < PRICE.high;
     case 'high':
-      return price >= HIGH_PRICE;
+      return price >= PRICE.high;
     default:
       return false;
   }

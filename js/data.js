@@ -32,7 +32,7 @@ const prepareData = (filterData) => {
   preparedData = data;
 };
 
-const getData = () => preparedData;
+const getData = () => [...preparedData];
 
 /**
  * Сохраняет в замыкание модуля сырые данные
