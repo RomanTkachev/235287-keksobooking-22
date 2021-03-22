@@ -76,6 +76,15 @@ const pluralize = (count, variants) => {
 
   return variants[2];
 };
+/**
+ * Проверка на наличие ключа
+ * @param {*} obj — объект
+ * @param {*} key — ключ
+ * @returns true/false 
+ */
+const hasKey = (obj, key) => {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+};
 
 export {
   getRandomBetween,
@@ -83,5 +92,6 @@ export {
   getRandomArrayElement,
   getRandomArrayWithUniqueElements,
   getRandomObjectValue,
-  pluralize
+  pluralize,
+  hasKey
 };
