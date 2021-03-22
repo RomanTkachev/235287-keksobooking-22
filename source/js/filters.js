@@ -98,6 +98,7 @@ const setFeatureValue = (featureKey, featureValue) => {
 
 const checkFeatures = (features) => {
   const featureValues = currentValues[FilterTypes.FEATURES];
+  
   for (let featureKey in featureValues) {
     if(featureValues[featureKey] && !features.includes(featureKey.split('-')[1])) {
       return false;
