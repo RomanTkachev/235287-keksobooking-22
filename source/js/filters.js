@@ -41,10 +41,18 @@ const DEFAULT_VALUES = {
   [FilterTypes.FEATURES]: null,
 }
 
-
 const PRICE = {
   low: 10000,
   high: 50000,
+}
+
+const EMPTY_SELECT_VALUE = 'any';
+
+const HousingPriceTypes = {
+  ANY: 'any',
+  LOW: 'low',
+  HIGH: 'high',
+  MIDDLE: 'middle',
 }
 
 /**
@@ -59,7 +67,11 @@ const getDefaultValues = () => ({
   },
 })
 
-const currentValues = getDefaultValues();
+let currentValues = getDefaultValues();
+
+const resetFilters = () => {
+  currentValues = getDefaultValues();
+}
 
 /**
  * Определяет выбранное значение в Select
@@ -110,16 +122,21 @@ const checkFeatures = (features) => {
 
 const checkHousingPrice = (type, price) => {
   switch (type) {
-    case 'any':
+    case HousingPriceTypes.ANY:
       return true;
-    case 'low':
+
+    case HousingPriceTypes.LOW:
       return price < PRICE.low;
-    case 'middle':
+      
+    case HousingPriceTypes.MIDDLE:
       return price >= PRICE.low && price < PRICE.high;
-    case 'high':
+
+    case HousingPriceTypes.HIGH:
       return price >= PRICE.high;
+
     default:
       return false;
+
   }
 }
 
@@ -133,7 +150,7 @@ const checkValue = (key, offerValue) => {
 
 const checkData = (data) => {
   for (let fieldKey in FieldNames) {
-    if(!currentValues[fieldKey] || currentValues[fieldKey] === 'any') {
+    if(!currentValues[fieldKey] || currentValues[fieldKey] === EMPTY_SELECT_VALUE) {
       continue;
     }
 
@@ -145,4 +162,4 @@ const checkData = (data) => {
   return checkFeatures(data.offer.features);
 };
 
-export {setSelectValue, setFeatureValue, checkData};
+export {setSelectValue, setFeatureValue, checkData, resetFilters};

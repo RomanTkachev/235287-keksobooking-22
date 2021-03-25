@@ -1,9 +1,9 @@
 /* global _:readonly */
-import {deactivateForm, activateForm, setMarkerCoordinates} from './form.js';
-import {createMap, createIcons, removeIcons} from './map.js';
+import {deactivateForm, activateForm, setMarkerCoordinates, activateFilter} from './form.js';
+import {createMap, createIcons, removeIcons, resetMap} from './map.js';
 import {createPopup, showAlertPopup} from './popup.js';
 import {loadData, SERVER_GET_URL} from './api.js';
-import {setSelectValue, setFeatureValue, checkData} from './filters.js';
+import {setSelectValue, setFeatureValue, checkData, resetFilters} from './filters.js';
 import {storeData, getData, prepareData} from './data.js';
 
 const RERENDER_DELAY = 500;
@@ -33,22 +33,30 @@ const renderIcons = (ads) => {
   createIcons(points, pinClickHandler);
 }
 
+const handleReset = () => {
+  resetFilters();
+  resetMap(setMarkerCoordinates);
+  updateIcons();
+}
+
 /**
  * Обработчик успешной загрузки данных с сервера
  * 1. Обрабатывает сырые данные из ответа сервера
  * 2. Отрисовывает маркеры объявлений на карте
+ * 3. Активирует форму и фильтр
  * @param {*} data данные с сервера в формате json 
  */
-const onSuccessHandler = (data) => {
+const handleDataLoadSuccess = (data) => {
   storeData(data);
   renderIcons(getData());
+  activateFilter();
 }
 
 /**
  * Обработчик ошибки загрузки данных с сервера
  * 1. Вызывает показ попапа с сообщением об ошибке загрузки
  */
-const onErrorHandler = () => {
+const handleDataLoadError = () => {
   showAlertPopup();
 }
 
@@ -92,13 +100,12 @@ const handleCheckboxChange = (...args) => {
 
 /**
  * Обработчик загрузки карты. 
- * 1. Актививрует форму
- * 2. По загрузке данных вызывает обработчик успешной загрузки
- * 3. Иначе вызывает обработчик ошибки загрузки
+ * 1. По загрузке данных вызывает обработчик успешной загрузки
+ * 2. Иначе вызывает обработчик ошибки загрузки
  */
 const handleMapLoaded = () => {
-  activateForm(handleSelectChange, handleCheckboxChange);
-  loadData(SERVER_GET_URL, onSuccessHandler, onErrorHandler);
+  activateForm(handleSelectChange, handleCheckboxChange, handleReset);
+  loadData(SERVER_GET_URL, handleDataLoadSuccess, handleDataLoadError);
 }
 
 deactivateForm();

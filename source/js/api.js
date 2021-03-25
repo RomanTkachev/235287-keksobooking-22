@@ -1,7 +1,6 @@
 const SERVER_GET_URL = 'https://22.javascript.pages.academy/keksobooking/data';
 const SERVER_SEND_URL = 'https://22.javascript.pages.academy/keksobooking';
 
-
 /**
  * Загрузка данных с сервера
  * 1. Получает ответ с сервера
@@ -26,7 +25,7 @@ const loadData = (serverUrl, onSuccess, onError) => {
       onSuccess(data);
     })
     .catch(onError);
-}
+} 
 
 /**
  * Отправка данных на сервер.

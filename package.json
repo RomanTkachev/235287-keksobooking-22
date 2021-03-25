@@ -20,6 +20,7 @@
   "license": "MIT",
   "dependencies": {},
   "scripts": {
+    "rebuild": "npm run build && npm run start",
     "build": "webpack --mode production",
     "start": "browser-sync start --server \"build/\" --no-ui --files \"source/**/*.js\"",
     "test": "eslint source/js"

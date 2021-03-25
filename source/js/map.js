@@ -5,7 +5,6 @@ const OPENSTREETMAP_COPYRIGHT = '&copy; <a href="https://www.openstreetmap.org/c
 const OPENSTREETMAP_TILE = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const MAP_SCALE = 10;
 
-
 const MAIN_PIN_ICON_SIZES = {
   width: 50,
   height: 50,
@@ -26,7 +25,7 @@ const COMMON_PIN_ICON_ANCHOR_SIZES = {
   height: 40,
 };
 
-const TOKIO_CENTER_COORDINATES = {
+const DEFAULT_CENTER_COORDINATES = {
   lat: 35.6895,
   lng: 139.69171,
 };
@@ -53,10 +52,7 @@ const MAIN_MAP_ICON = LEAFLET.icon({
 });
 
 const MAIN_MAP_MARKER = LEAFLET.marker(
-  {
-    lat: `${TOKIO_CENTER_COORDINATES.lat}`,
-    lng: `${TOKIO_CENTER_COORDINATES.lng}`,
-  },
+  {...DEFAULT_CENTER_COORDINATES},
   {
     draggable: true,
     icon: MAIN_MAP_ICON,
@@ -64,8 +60,8 @@ const MAIN_MAP_MARKER = LEAFLET.marker(
 );
 
 const loadMap = (onLoad, onMainPinMove) => {
-  MAP.on('load', onLoad).setView(TOKIO_CENTER_COORDINATES, MAP_SCALE);
-  onMainPinMove(TOKIO_CENTER_COORDINATES)
+  MAP.on('load', onLoad).setView(DEFAULT_CENTER_COORDINATES, MAP_SCALE);
+  onMainPinMove(DEFAULT_CENTER_COORDINATES)
 };
 
 const loadTile = () => {
@@ -116,9 +112,11 @@ const createIcons = (points, onClick) => {
   });
 }
 
-const resetMap = () => {
-  MAP.panTo(new LEAFLET.LatLng(TOKIO_CENTER_COORDINATES.lat, TOKIO_CENTER_COORDINATES.lng));
-  MAIN_MAP_MARKER.setLatLng(LEAFLET.latLng(TOKIO_CENTER_COORDINATES.lat, TOKIO_CENTER_COORDINATES.lng));
+const resetMap = (setMarkerCoordinates) => {
+  const coords = new LEAFLET.LatLng(DEFAULT_CENTER_COORDINATES.lat, DEFAULT_CENTER_COORDINATES.lng)
+  MAP.panTo(coords);
+  MAIN_MAP_MARKER.setLatLng(coords);
+  setMarkerCoordinates(DEFAULT_CENTER_COORDINATES);
 }
 /**
  * Создание карты
@@ -139,4 +137,4 @@ const removeIcons = () => {
   icons = [];
 }
 
-export {createMap, resetMap, createIcons, removeIcons}
+export {createMap, resetMap, createIcons, removeIcons, DEFAULT_CENTER_COORDINATES}

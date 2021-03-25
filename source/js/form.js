@@ -1,6 +1,5 @@
 import {sendData, SERVER_SEND_URL} from './api.js';
 import {showPopupSuccess, showPopupError} from './popup.js';
-import {resetMap} from './map.js';
 
 const MAX_PRICE_VALUE = 1000000;
 const MAX_ROOMS_COUNT = 100;
@@ -106,7 +105,7 @@ let handleFilterChange;
  * @param {*} setCheckboxValue — обработчик изменений для чекбоксов фильтра
  */
 
-const activateForm = (setSelectValue, setCheckboxValue) => {
+const activateForm = (setSelectValue, setCheckboxValue, onReset) => {
   formInteractiveElements.forEach((formElement) => {
     formElement.disabled = false;
   });
@@ -114,9 +113,8 @@ const activateForm = (setSelectValue, setCheckboxValue) => {
   handleFilterChange = getHandleFilterChange(setSelectValue, setCheckboxValue);
   MAP_FILTER.addEventListener('change', handleFilterChange);
 
-  AD_FORM.classList.remove('ad-form--disabled')
-  activateFilter();
-  addEventListenersToForm();
+  AD_FORM.classList.remove('ad-form--disabled');
+  addEventListenersToForm(onReset);
 }
 
 const setCheckInTime = () => {
@@ -238,15 +236,51 @@ const handlePhotoChange = () => {
   }
 }
 
-const handleFormSuccess = () => {
+const getHandleFormSuccess = (onReset) => () => {
   showPopupSuccess();
   AD_FORM.reset();
+  MAP_FILTER.reset();
   cleanAvatar();
   cleanPhoto();
-  resetMap();
+  onReset();
 }
 
-const addEventListenersToForm = () => {
+const handleFormError = () => {
+  showPopupError();
+}
+
+let handleFormSuccess;
+
+const handlePriceChange = () => {
+  validateMaxPrice();
+  validateMinPrice();
+}
+
+const getHandleFormSubmit = (onReset) => (evt) => {
+  evt.preventDefault();
+
+  const formData = new FormData(evt.target)
+
+  handleFormSuccess = getHandleFormSuccess(onReset);
+
+  sendData(
+    SERVER_SEND_URL,
+    formData,
+    handleFormSuccess,
+    handleFormError,
+  );
+} 
+
+let handleFormSubmit
+
+const getHandleFormReset = (onReset) => () => {
+  AD_FORM.reset();
+  onReset()
+}
+
+let handleFormReset
+
+const addEventListenersToForm = (onReset) => {
   FormInputs.CHECKOUT.addEventListener('change', setCheckOutTime);
   FormInputs.CHECKIN.addEventListener('change', setCheckInTime);
   FormInputs.TYPE.addEventListener('change', setMinPrices);
@@ -254,29 +288,11 @@ const addEventListenersToForm = () => {
   FormInputs.ROOM_NUMBER.addEventListener('change', validateRoomsAndGuests);
   FormInputs.PHOTO_CHOOSER.addEventListener('change', handlePhotoChange);
   FormInputs.AVATAR_CHOOSER.addEventListener('change', handleAvatarChange);
-
-  FormInputs.PRICE.addEventListener('input', () => {
-    validateMaxPrice();
-    validateMinPrice();
-  });
-
-  AD_FORM.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-
-    const formData = new FormData(evt.target)
-
-    sendData(
-      SERVER_SEND_URL,
-      formData,
-      handleFormSuccess,
-      showPopupError,
-    );
-  });
-
-  BUTTON_RESET.addEventListener('click', () => {
-    AD_FORM.reset();
-    resetMap();
-  })
+  FormInputs.PRICE.addEventListener('input', handlePriceChange);
+  handleFormSubmit = getHandleFormSubmit(onReset);
+  AD_FORM.addEventListener('submit', handleFormSubmit);
+  handleFormReset = getHandleFormReset(onReset)
+  BUTTON_RESET.addEventListener('click', handleFormReset)
 }
 
 const removeEventListenersFromForm = () => {
@@ -287,45 +303,30 @@ const removeEventListenersFromForm = () => {
   FormInputs.ROOM_NUMBER.removeEventListener('change', validateRoomsAndGuests);
   FormInputs.PHOTO_CHOOSER.removeEventListener('change', handlePhotoChange);
   FormInputs.AVATAR_CHOOSER.removeEventListener('change', handleAvatarChange);
-
-  FormInputs.PRICE.removeEventListener('input', () => {
-    validateMaxPrice();
-    validateMinPrice();
-  });
-
-  AD_FORM.removeEventListener('submit', (evt) => {
-    evt.preventDefault();
-
-    const formData = new FormData(evt.target)
-
-    sendData(
-      SERVER_SEND_URL,
-      formData,
-      () => {showPopupSuccess(), AD_FORM.reset(), resetMap()},
-      showPopupError,
-    );
-  });
-
-  BUTTON_RESET.removeEventListener('click', () => {
-    AD_FORM.reset();
-    resetMap();
-  })
+  FormInputs.PRICE.removeEventListener('input', handlePriceChange);
+  AD_FORM.removeEventListener('submit', handleFormSubmit);
+  BUTTON_RESET.removeEventListener('click', handleFormReset);
 }
 
 const cleanAvatar = () => {
   const avatar = AD_FORM.querySelector('.ad-form-header__preview img');
+  
   avatar.src = 'img/muffin-grey.svg';
 }
 
 const cleanPhoto = () => {
   const photo = AD_FORM.querySelector('.ad-form__photo img');
-  photo.remove();
+
+  if(photo) {
+    photo.remove();
+  }
 }
 
 export {
   addEventListenersToForm,
   deactivateForm,
   activateForm,
+  activateFilter,
   FormInputs,
   setMarkerCoordinates
 }
