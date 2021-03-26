@@ -10,6 +10,15 @@ const MAIN = document.querySelector('main');
 const ALERT_POPUP = document.querySelector('#data-error').content.querySelector('.data-error__popup');
 const ALERT_POPUP_TIME = 5000;
 const POPUPS_Z_INDEX = 9999;
+const ESCAPE_KEY_CODE = 27;
+
+const HOUSE_TYPES = {
+  'house': 'Дом',
+  'palace': 'Дворец',
+  'flat': 'Квартира',
+  'bungalow': 'Бунгало',
+};
+
 const PopupAvatarsSizes = {
   WIDTH: 70,
   HEIGHT: 70,
@@ -23,12 +32,12 @@ const createPhotosListForPopup = (popupData, template) => {
   const fillPhotos = (photo, i) => {
     const popupPhotoTemplate = popupPhoto.cloneNode(true)
 
-    popupPhotoTemplate.setAttribute('src', popupData.offer.photos[i]);
+    popupPhotoTemplate.src = popupData.offer.photos[i];
     fragment.appendChild(popupPhotoTemplate);
   }
 
   popupPhotos.textContent = '';
-  popupData.offer.photos.forEach(fillPhotos)
+  popupData.offer.photos.forEach(fillPhotos);
 
   return fragment
 };
@@ -76,7 +85,7 @@ const createPopup = (popupData) => {
   const popupFeatures = popup.querySelector('.popup__features');
 
   if (popupData.author.avatar) {
-    popup.querySelector('.popup__avatar').setAttribute('src', popupData.author.avatar);
+    popup.querySelector('.popup__avatar').src = popupData.author.avatar;
     popup.querySelector('.popup__avatar').style.width = PopupAvatarsSizes.WIDTH + 'px';
     popup.querySelector('.popup__avatar').style.height = PopupAvatarsSizes.HEIGHT + 'px';
   }
@@ -85,7 +94,7 @@ const createPopup = (popupData) => {
   setContentOrRemove(popup, '.popup__title', offer.title);
   setContentOrRemove(popup, '.popup__text--address', offer.adress);
   setContentOrRemove(popup, '.popup__text--price', `${popupData.offer.price} ₽/ночь`);
-  setContentOrRemove(popup, '.popup__type', offer.type);
+  setContentOrRemove(popup, '.popup__type', HOUSE_TYPES[popupData.offer.type]);
   setContentOrRemove(popup, '.popup__text--capacity', getCapacityValue(offer.rooms, offer.guests));
   setContentOrRemove(popup, '.popup__text--time',  getCheckInOutValue(offer.checkin, offer.checkout));
   setContentOrRemove(popup, '.popup__description', offer.description);
@@ -112,7 +121,7 @@ const showPopup = (template, button) => {
   MAIN.appendChild(modal);
 
   const onPopupEscKeydown = (evt) => {
-    if (evt.keyCode === 27) {
+    if (evt.keyCode === ESCAPE_KEY_CODE) {
       evt.preventDefault();
       closePopup();
     }
