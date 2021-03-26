@@ -5,7 +5,6 @@ const MAX_PRICE_VALUE = 1000000;
 const MAX_ROOMS_COUNT = 100;
 const DIGIT_AFTER_POINT = 5
 const AD_FORM = document.querySelector('.ad-form');
-const BUTTON_RESET = document.querySelector('.ad-form__reset');
 const MAP_FILTER = document.querySelector('.map__filters');
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const AVATAR_PREVIEW = document.querySelector('.ad-form-header__preview img');
@@ -75,6 +74,7 @@ const activateFilter = () => {
 }
 
 const setMarkerCoordinates = (coords) => {
+  console.log('сработал set marker', coords);
   FormInputs.ADRESS.value = `${coords.lat.toFixed(DIGIT_AFTER_POINT)}, ${coords.lng.toFixed(DIGIT_AFTER_POINT)}`
 }
 
@@ -271,14 +271,17 @@ const getHandleFormSubmit = (onReset) => (evt) => {
   );
 } 
 
-let handleFormSubmit
+let handleFormSubmit;
 
 const getHandleFormReset = (onReset) => () => {
   AD_FORM.reset();
-  onReset()
+  MAP_FILTER.reset();
+  cleanAvatar();
+  cleanPhoto();
+  onReset();
 }
 
-let handleFormReset
+let handleFormReset;
 
 const addEventListenersToForm = (onReset) => {
   FormInputs.CHECKOUT.addEventListener('change', setCheckOutTime);
@@ -291,8 +294,8 @@ const addEventListenersToForm = (onReset) => {
   FormInputs.PRICE.addEventListener('input', handlePriceChange);
   handleFormSubmit = getHandleFormSubmit(onReset);
   AD_FORM.addEventListener('submit', handleFormSubmit);
-  handleFormReset = getHandleFormReset(onReset)
-  BUTTON_RESET.addEventListener('click', handleFormReset)
+  handleFormReset = getHandleFormReset(onReset);
+  AD_FORM.addEventListener('reset', handleFormReset);
 }
 
 const removeEventListenersFromForm = () => {
@@ -305,7 +308,7 @@ const removeEventListenersFromForm = () => {
   FormInputs.AVATAR_CHOOSER.removeEventListener('change', handleAvatarChange);
   FormInputs.PRICE.removeEventListener('input', handlePriceChange);
   AD_FORM.removeEventListener('submit', handleFormSubmit);
-  BUTTON_RESET.removeEventListener('click', handleFormReset);
+  AD_FORM.removeEventListener('reset', handleFormReset);
 }
 
 const cleanAvatar = () => {

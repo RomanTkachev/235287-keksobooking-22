@@ -113,10 +113,10 @@ const createIcons = (points, onClick) => {
 }
 
 const resetMap = (setMarkerCoordinates) => {
-  const coords = new LEAFLET.LatLng(DEFAULT_CENTER_COORDINATES.lat, DEFAULT_CENTER_COORDINATES.lng)
+  const coords = new LEAFLET.LatLng(DEFAULT_CENTER_COORDINATES.lat, DEFAULT_CENTER_COORDINATES.lng);
   MAP.panTo(coords);
   MAIN_MAP_MARKER.setLatLng(coords);
-  setMarkerCoordinates(DEFAULT_CENTER_COORDINATES);
+  setTimeout(() => setMarkerCoordinates(DEFAULT_CENTER_COORDINATES), 0);
 }
 /**
  * Создание карты
