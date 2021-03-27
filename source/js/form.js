@@ -74,7 +74,6 @@ const activateFilter = () => {
 }
 
 const setMarkerCoordinates = (coords) => {
-  console.log('сработал set marker', coords);
   FormInputs.ADRESS.value = `${coords.lat.toFixed(DIGIT_AFTER_POINT)}, ${coords.lng.toFixed(DIGIT_AFTER_POINT)}`
 }
 
