@@ -130,6 +130,16 @@ const setMinPrices = () => {
   FormInputs.PRICE.min = MIN_PRICES[FormInputs.TYPE.value];
 }
 
+const setDefaultRoomsAndGuestsVaules = () => {
+  FormInputs.ROOM_NUMBER.value = 1;
+  
+  formInputCapacityOptions.forEach((option) => {
+    if(FormInputs.ROOM_NUMBER.value < option.value) {
+      option.disabled = true;
+    }
+  })
+}
+
 const validateTitleLength = () => {
   const valueLength = FormInputs.TITLE.value.length;
 
@@ -243,6 +253,8 @@ const getHandleFormSuccess = (onReset) => () => {
   cleanAvatar();
   cleanPhoto();
   onReset();
+  setMinPrices();
+  setDefaultRoomsAndGuestsVaules();
 }
 
 const handleFormError = () => {
@@ -279,6 +291,8 @@ const getHandleFormReset = (onReset) => () => {
   cleanAvatar();
   cleanPhoto();
   onReset();
+  setMinPrices();
+  setDefaultRoomsAndGuestsVaules();
 }
 
 let handleFormReset;
